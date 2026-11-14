@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import {
   AlertTriangle,
+  Download,
   FileSpreadsheet,
   LogOut,
   Moon,
@@ -26,6 +27,7 @@ interface FilterToolbarProps {
   isDark: boolean;
   onToggleTheme: () => void;
   onUploadCsvFile: (file: File) => void;
+  onExportCsv: () => void;
   errorMessage: string | null;
   onDismissError: () => void;
   onRetrySync: () => void;
@@ -51,6 +53,7 @@ export function FilterToolbar({
   isDark,
   onToggleTheme,
   onUploadCsvFile,
+  onExportCsv,
   errorMessage,
   onDismissError,
   onRetrySync,
@@ -189,6 +192,16 @@ export function FilterToolbar({
           >
             <Upload className="h-4 w-4 text-[#F58220]" aria-hidden="true" />
             <span>Upload CSV</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onExportCsv}
+            disabled={filteredCount === 0}
+            className="inline-flex min-h-[40px] items-center gap-2 rounded-md border border-[#D8D8D2] bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-[#0D0D0F] transition-colors hover:bg-[#F2F2EE] disabled:opacity-40 disabled:cursor-not-allowed dark:border-[#2E2E36] dark:bg-[#141417] dark:text-[#F5F5F4] dark:hover:bg-[#1E1E24] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F58220]"
+          >
+            <Download className="h-4 w-4 text-[#F58220]" aria-hidden="true" />
+            <span>Export to CSV</span>
           </button>
 
           <button

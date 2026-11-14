@@ -234,3 +234,89 @@ export async function fetchGoogleSheetCsv(): Promise<EnrichedEmployee[]> {
     window.clearTimeout(timeoutId);
   }
 }
+
+function escapeCsvCell(value: string | number): string {
+  const str = String(value ?? '');
+  if (/[",\r\n]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+export function serializeEmployeesToCsv(employees: EnrichedEmployee[]): string {
+  const headers = [
+    'EmployeeID',
+    'FirstName',
+    'LastName',
+    'Gender',
+    'Age',
+    'MaritalStatus',
+    'Department',
+    'JobTitle',
+    'JobLevel',
+    'EmploymentType',
+    'Location',
+    'HireDate',
+    'YearsAtCompany',
+    'YearsInCurrentRole',
+    'YearsSinceLastPromotion',
+    'YearsWithCurrManager',
+    'Education',
+    'DistanceFromHome_km',
+    'BusinessTravel',
+    'MonthlyIncome_GBP',
+    'Attrition',
+    'FlightRiskScore',
+    'FlightRiskBand',
+  ];
+
+  const lines = [headers.join(',')];
+
+  for (const emp of employees) {
+    const row = [
+      emp.EmployeeID,
+      emp.FirstName,
+      emp.LastName,
+      emp.Gender,
+      emp.Age,
+      emp.MaritalStatus,
+      emp.Department,
+      emp.JobTitle,
+      emp.JobLevel,
+      emp.EmploymentType,
+      emp.Location,
+      emp.HireDate,
+      emp.YearsAtCompany,
+      emp.YearsInCurrentRole,
+      emp.YearsSinceLastPromotion,
+      emp.YearsWithCurrManager,
+      emp.Education,
+      emp.DistanceFromHome_km,
+      emp.BusinessTravel,
+      emp.MonthlyIncome_GBP,
+      emp.Attrition,
+      emp.flightRiskScore,
+      emp.flightRiskBand,
+    ];
+    lines.push(row.map(escapeCsvCell).join(','));
+  }
+
+  return lines.join('\r\n');
+}
+
+export function downloadEmployeesCsv(employees: EnrichedEmployee[]): void {
+  if (employees.length === 0) return;
+  const csvContent = '\uFEFF' + serializeEmployeesToCsv(employees);
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  const dateStamp = new Date().toISOString().slice(0, 10);
+  link.href = url;
+  link.setAttribute('download', `shell-uk-workforce-${dateStamp}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+

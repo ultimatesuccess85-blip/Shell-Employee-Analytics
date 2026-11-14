@@ -16,7 +16,7 @@ import {
 import { fetchSpreadsheetEmployees } from './services/googleSheets';
 import { DataSourceMeta, EnrichedEmployee, FilterState, TabKey } from './types/hr';
 import { applyFilters } from './utils/analytics';
-import { fetchGoogleSheetCsv, parseEmployeeCsv } from './utils/csv';
+import { downloadEmployeesCsv, fetchGoogleSheetCsv, parseEmployeeCsv } from './utils/csv';
 
 const DEFAULT_FILTERS: FilterState = {
   department: 'All',
@@ -262,6 +262,7 @@ export default function App() {
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
         onUploadCsvFile={handleUploadCsvFile}
+        onExportCsv={() => downloadEmployeesCsv(filteredEmployees)}
         errorMessage={errorMessage}
         onDismissError={() => setErrorMessage(null)}
         onRetrySync={() => syncSheet(false)}
